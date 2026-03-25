@@ -1,4 +1,17 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+This is a [Next.js](https://nextjs.org) app in the Turborepo.
+
+## Backend API dependency
+
+This app now talks to the backend service (instead of the database directly).
+
+Set this environment variable before running:
+
+```bash
+BACKEND_URL=http://localhost:3001
+NEXT_PUBLIC_WS_URL=ws://localhost:3002
+```
+
+If not set, it falls back to `http://localhost:3001` for backend and `ws://localhost:3002` for websocket.
 
 ## Getting Started
 

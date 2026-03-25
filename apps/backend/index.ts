@@ -151,7 +151,7 @@ app.delete("/todo/:id", async (req, res) => {
 });
 
 app.listen(3001, () => {
-  console.log(`Server up at http://localhost:3001`);
+  console.log(`Server up at http://localhost:3005`);
 });
 // console.log("DB URL:", process.env.DATABASE_URL);
 // console.log("TEST:", process.env);
