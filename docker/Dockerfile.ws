@@ -19,10 +19,7 @@ COPY apps/ws ./apps/ws
 # Move to web socket
 WORKDIR /app/apps/ws
 
-# Copy env
-COPY apps/ws/.env .env
-
 EXPOSE 3002
 
 # Run app
-CMD ["bun", "run", "index.ts"]
+CMD ["sh", "-c", "cd /app/packages/db && bunx prisma generate && bunx prisma migrate deploy && cd /app/apps/ws && bun run index.ts"]

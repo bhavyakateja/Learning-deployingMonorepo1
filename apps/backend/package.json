@@ -12,7 +12,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "db": "*",
+    "db": "workspace:*",
     "dotenv": "^17.3.1",
     "express": "^5.2.1"
   }

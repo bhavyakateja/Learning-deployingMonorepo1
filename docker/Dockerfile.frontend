@@ -1,37 +1,71 @@
+# when docker build frontend alone
+
+# FROM oven/bun:1 AS builder
+
+# WORKDIR /app
+
+# # Copy root files
+# COPY package.json bun.lock turbo.json ./
+
+# # Copy ONLY web app (important)
+# COPY apps/web ./apps/web
+
+# # Move to web app
+# WORKDIR /app/apps/web
+
+# # Install ONLY web dependencies
+# RUN bun install
+
+# # Build
+# RUN bun run build
+
+# # ---------- 2️⃣ Production Stage ----------
+# FROM oven/bun:1 AS runner
+
+# WORKDIR /app
+
+# # Copy only built app (NOT full source)
+# # Copy built app
+# COPY --from=builder /app/apps/web/.next ./.next
+# COPY --from=builder /app/apps/web/public ./public
+# COPY --from=builder /app/apps/web/package.json ./package.json
+# COPY --from=builder /app/apps/web/node_modules ./node_modules
+
+# # Expose port
+# EXPOSE 3000
+
+# # Start production server
+# CMD ["bunx", "next", "start"]
+
+# with docker-compose up
+
 FROM oven/bun:1 AS builder
 
 WORKDIR /app
 
-# Copy only dependency files (for caching)
-COPY package.json bun.lock turbo.json ./
-COPY apps/web/package.json ./apps/web/package.json
-COPY packages ./packages
+RUN bun add -g turbo
 
-# Install dependencies
-RUN bun install
+COPY . .
 
-# Copy full code
-COPY apps/web ./apps/web
+RUN turbo prune web --docker
 
-# Move to web app
-WORKDIR /app/apps/web
+WORKDIR /app/out/full
 
-# Build Next.js app
+ENV NEXT_DISABLE_TURBOPACK=1
+
+RUN bun install --frozen-lockfile
 RUN bun run build
 
-# ---------- 2️⃣ Production Stage ----------
+
+# ---------- Production ----------
 FROM oven/bun:1 AS runner
 
 WORKDIR /app
 
-# Copy only built app (NOT full source)
-COPY --from=builder /app/apps/web/.next ./.next
-COPY --from=builder /app/apps/web/public ./public
-COPY --from=builder /app/apps/web/package.json ./package.json
-COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/out/full ./
 
-# Expose port
 EXPOSE 3000
 
-# Start production server
+WORKDIR /app/apps/web
+
 CMD ["bun", "run", "start"]

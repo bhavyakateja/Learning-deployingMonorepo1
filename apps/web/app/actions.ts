@@ -16,7 +16,7 @@ export type User = {
     todos: Todo[];
 };
 
-const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:3005";
+const BACKEND_URL = process.env.BACKEND_URL ?? "http://localhost:3001";
 
 export async function fetchUsers() {
     const response = await fetch(`${BACKEND_URL}/users`, {

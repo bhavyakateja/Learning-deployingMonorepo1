@@ -1,1 +1,36 @@
+# dependencies
 node_modules
+**/node_modules
+
+# build outputs / caches
+.next
+**/.next
+dist
+**/dist
+.turbo
+**/.turbo
+out
+**/out
+coverage
+**/coverage
+
+# prisma local artifacts (optional if generated in build)
+**/generated
+
+# vcs / editor
+.git
+.gitignore
+.vscode
+.idea
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# env (never send secrets in build context)
+.env
+.env.*
+**/.env
+**/.env.*

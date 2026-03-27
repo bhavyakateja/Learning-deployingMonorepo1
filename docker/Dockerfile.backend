@@ -19,10 +19,7 @@ COPY apps/backend ./apps/backend
 # Move to backend
 WORKDIR /app/apps/backend
 
-# Copy env
-COPY apps/backend/.env .env
-
 EXPOSE 3001
 
 # Run app
-CMD ["sh", "-c", "bun run db:generate && bun run index.ts"]
+CMD ["sh", "-c", "cd /app/packages/db && bunx prisma generate && bunx prisma migrate deploy && cd /app/apps/backend && bun run index.ts"]
