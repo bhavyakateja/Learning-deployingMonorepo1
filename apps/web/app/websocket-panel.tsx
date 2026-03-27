@@ -34,9 +34,21 @@ export function WebSocketPanel() {
             setError("WebSocket error");
         };
 
-        socket.onmessage = (event) => {
+        socket.onmessage = async (event) => {
             try {
-                const data = JSON.parse(event.data) as WsUserMessage | { error: string };
+                let text: string;
+
+                if (typeof event.data === "string") {
+                    text = event.data;
+                } else if (event.data instanceof Blob) {
+                    text = await event.data.text();
+                } else if (event.data instanceof ArrayBuffer) {
+                    text = new TextDecoder().decode(event.data);
+                } else {
+                    throw new Error("Unsupported message type");
+                }
+
+                const data = JSON.parse(text) as WsUserMessage | { error: string };
 
                 if ("error" in data) {
                     setError(data.error);
@@ -44,7 +56,9 @@ export function WebSocketPanel() {
                 }
 
                 setMessages((prev) => [data, ...prev].slice(0, 8));
-            } catch {
+
+            } catch (err) {
+                console.error("WS ERROR:", err);
                 setError("Invalid message from websocket server");
             }
         };
@@ -97,7 +111,7 @@ export function WebSocketPanel() {
                 ) : (
                     messages.map((message) => (
                         <div
-                            key={message.id}
+                            key={String(message.id)}
                             style={{
                                 background: "#0f172a",
                                 borderRadius: "6px",
