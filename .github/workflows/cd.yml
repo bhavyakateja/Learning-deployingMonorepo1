@@ -10,8 +10,8 @@ on:
   # workflow_dispatch:
   workflow_run:
     workflows: ["CI"]
-    types:
-      - completed
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
@@ -20,7 +20,9 @@ concurrency:
 
 jobs:
   build-and-push:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -59,7 +61,9 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}:${{ github.sha }}
 
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
     needs: build-and-push
     runs-on: ubuntu-latest
 
@@ -74,7 +78,7 @@ jobs:
             set -e
             cd ${{ secrets.EC2_APP_PATH }}
             git pull origin main
-            
+
             cat > apps/backend/.env <<'EOF'
             DATABASE_URL=${{ secrets.DATABASE_URL }}
             EOF
