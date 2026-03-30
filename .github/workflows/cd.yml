@@ -32,6 +32,8 @@ jobs:
           - service: frontend
             dockerfile: ./docker/Dockerfile.frontend
             image: todo-frontend
+            build_args: |
+              NEXT_PUBLIC_WS_URL=${{ secrets.NEXT_PUBLIC_WS_URL }}
           - service: backend
             dockerfile: ./docker/Dockerfile.backend
             image: todo-backend
@@ -58,6 +60,7 @@ jobs:
           context: .
           file: ${{ matrix.dockerfile }}
           push: true
+          build-args: ${{ matrix.build_args }}
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ matrix.image }}:${{ github.sha }}
