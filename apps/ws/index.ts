@@ -1,6 +1,7 @@
 import { prismaClient } from "db/client";
 
 const server = Bun.serve({
+  hostname: "0.0.0.0",
   port: 3002,
 
   fetch(req, server) {

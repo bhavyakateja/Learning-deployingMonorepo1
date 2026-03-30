@@ -150,8 +150,8 @@ app.delete("/todo/:id", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log(`Server up at http://localhost:3001`);
+app.listen(3001, "0.0.0.0", () => {
+  console.log(`Server up at http://0.0.0.0:3001`);
 });
 // console.log("DB URL:", process.env.DATABASE_URL);
 // console.log("TEST:", process.env);
