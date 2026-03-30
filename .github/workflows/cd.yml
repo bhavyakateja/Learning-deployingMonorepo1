@@ -22,7 +22,9 @@ jobs:
   build-and-push:
     if: >
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -63,7 +65,9 @@ jobs:
   deploy:
     if: >
       github.event_name == 'workflow_dispatch' ||
-      github.event.workflow_run.conclusion == 'success'
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main')
     needs: build-and-push
     runs-on: ubuntu-latest
 
